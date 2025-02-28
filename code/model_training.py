@@ -74,12 +74,16 @@ def train_a_model(
 ):
     if fast_mrmr:
         # Ejecutar fast-mrmr y capturar salida
+
         result = subprocess.run(
-            "./src_c/fast-mrmr -a " + str(fast_mrmr_k),
+            "./fast-mrmr -a " + str(fast_mrmr_k),
             shell=True,
             capture_output=True,
-            text=True
+            text=True,
+            cwd="src_c"  # <-- Esto cambia el directorio de trabajo antes de ejecutar el comando
         )
+
+
         print(result.stdout)
         # Obtener los índices de las características seleccionadas
         selected_features_indices = list(map(int, result.stdout.strip().split(',')))

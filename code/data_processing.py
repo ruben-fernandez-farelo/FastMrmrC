@@ -4,54 +4,57 @@ from sklearn import preprocessing
 from sklearn.metrics import make_scorer
 from imblearn.metrics import geometric_mean_score
 
+# Almacena los datos globalmente
 data_features = None
 
-
-def load_data(dataset_name: str) -> tuple[pd.DataFrame, pd.DataFrame]:
+def load_data(dataset_name: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series]:
     """
-    Load data from a CSV file.
+    Carga datos desde un archivo CSV.
 
-    Parameters:
-    dataset_path (str): The name of the dataset.
+    Parámetros:
+        dataset_name (str): Nombre del dataset sin la extensión.
 
-    Returns:
-    tuple: A tuple containing the features (x) and the labels (y).
+    Retorna:
+        tuple: (x, y, gene_names)
     """
-
     raw_df = pd.read_csv(f"./data/{dataset_name}.csv")
     x, y = raw_df.iloc[:, 1:-1], raw_df.iloc[:, -1]
     y = np.logical_not(preprocessing.LabelEncoder().fit(y).transform(y)).astype(int)
     gene_names = raw_df.iloc[:, 0]
     return x, y, gene_names
 
-
 def store_data_features(x: pd.DataFrame) -> None:
     """
-    Store the features of the data for later use.
+    Almacena las características globalmente para su uso posterior.
 
-    Parameters:
-    x (pd.DataFrame): The features of the data.
+    Parámetros:
+        x (pd.DataFrame): DataFrame con las características.
     """
     global data_features
-    data_features = x
-
-    x = np.arange(len(x))
-
-    return x
-
+    data_features = x.copy()  # Evita modificar x accidentalmente
 
 def get_data_features(indices) -> pd.DataFrame:
     """
-    Get the examples of the data with the specified indices.
+    Obtiene ejemplos del dataset usando índices.
 
-    Parameters:
-    indices (list): The indices of the examples to retrieve.
+    Parámetros:
+        indices (list): Lista de índices de las filas a recuperar.
 
-    Returns:
-    pd.DataFrame: The examples with the specified indices.
+    Retorna:
+        pd.DataFrame: Subconjunto del dataset.
     """
-    return data_features.iloc[indices]
+    global data_features
 
+    if data_features is None:
+        raise ValueError("Error: data_features no ha sido inicializado. Llama a store_data_features primero.")
+
+    if not isinstance(indices, list) or not all(isinstance(i, int) for i in indices):
+        raise ValueError(f"Índices inválidos para .iloc: {indices}")
+
+    if max(indices) >= len(data_features):
+        raise IndexError(f"Índice fuera de rango. Máximo permitido: {len(data_features) - 1}")
+
+    return data_features.iloc[indices]
 
 def generate_features(
     x_train: pd.DataFrame,
@@ -59,26 +62,26 @@ def generate_features(
     binary_threshold: float = 0.005,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Generate features for training and testing data based on specified parameters.
+    Genera características para los datos de entrenamiento y prueba.
 
-    Parameters:
-        - x_train (pd.DataFrame): Training data features.
-        - x_test (pd.DataFrame): Testing data features.
-        - y_train (pd.Series): Training data labels.
-        - y_test (pd.Series): Testing data labels.
-        - params (dict): Dictionary containing parameters for feature generation.
-        - random_state (int, optional): Random seed.
-        - verbose (int, optional): Whether to print number and type of features used.
-    Returns:
-        - x_train_temp (pd.DataFrame): Transformed training data features.
-        - x_test_temp (pd.DataFrame): Transformed testing data features.
+    Parámetros:
+        - x_train (pd.DataFrame): DataFrame con características de entrenamiento.
+        - x_test (pd.DataFrame): DataFrame con características de prueba.
+        - binary_threshold (float): Umbral para seleccionar características binarias.
+
+    Retorna:
+        - x_train_temp (pd.DataFrame): Características transformadas para entrenamiento.
+        - x_test_temp (pd.DataFrame): Características transformadas para prueba.
     """
+    # Verificar que los datos son DataFrames válidos
+    if not isinstance(x_train, pd.DataFrame) or not isinstance(x_test, pd.DataFrame):
+        raise TypeError("x_train y x_test deben ser DataFrames de pandas.")
 
-    x_train = get_data_features(x_train)
-    x_test = get_data_features(x_test)
+    # Filtrar columnas en base al umbral de media
+    valid_features = x_train.columns[x_train.mean() >= binary_threshold]
 
-    x_train = x_train.loc[:, x_train.mean() >= binary_threshold]
-    x_test = x_test.loc[:, x_train.columns]    
+    # Mantener las mismas columnas en ambos conjuntos
+    x_train_filtered = x_train[valid_features]
+    x_test_filtered = x_test[valid_features]
 
-    return x_train, x_test
-
+    return x_train_filtered, x_test_filtered
