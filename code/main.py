@@ -28,10 +28,10 @@ if __name__ == "__main__":
     if args["fast_mrmr"]:
         if args["fast_mrmr_k"] == "range":
             # Si se usa el rango, genera la lista de valores
-            print("fast_mrmr_k is a range")
+            #print("fast_mrmr_k is a range")
             search_space["fast_mrmr_k"] = list(range(1, args["pul_num_features"] + 1))
         else:
-            print("fast_mrmr_k is not a range")
+            #print("fast_mrmr_k is not a range")
             search_space["fast_mrmr_k"] = [args["fast_mrmr_k"]]
 
 

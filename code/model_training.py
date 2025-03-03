@@ -9,6 +9,7 @@ from code.models import get_model, set_class_weights
 from sklearn.metrics import f1_score
 from imblearn.metrics import geometric_mean_score
 import code.pu_learning as pul
+import code.config as cfg
 import subprocess
 import os
 
@@ -72,17 +73,21 @@ def train_a_model(
     fast_mrmr: bool = False,
     fast_mrmr_k: int = 0,
 ):
+    print("Número de columnas en x_train antes de Fast-MRMR:", x_train.shape[1])
     if fast_mrmr:
         # Ejecutar fast-mrmr y capturar salida
 
+        config = cfg.read_config()
+
         result = subprocess.run(
-            "./fast-mrmr -a " + str(fast_mrmr_k),
+            "./fast-mrmr -a " + str(fast_mrmr_k) + " -f ../utils/data-reader/"+ config["dataset"] +".mrmr",
             shell=True,
             capture_output=True,
             text=True,
             cwd="src_c"  # <-- Esto cambia el directorio de trabajo antes de ejecutar el comando
         )
 
+        
 
         print(result.stdout)
         # Obtener los índices de las características seleccionadas
