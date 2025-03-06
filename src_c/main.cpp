@@ -46,7 +46,7 @@ options parseOptions(int argc, char*argv[]) {
 	options opts;
 	opts.classIndex = 0;
 	opts.selectedFeatures = 10;
-	//opts.file = "../utils/data-reader/PathDip.mrmr";
+	//opts.file = "../utils/data-reader/P.mrmr";
 
 	if (argc > 1) {
 		for (int i = 0; i < argc; ++i) {

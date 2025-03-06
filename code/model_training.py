@@ -12,6 +12,9 @@ import code.pu_learning as pul
 import code.config as cfg
 import subprocess
 import os
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestClassifier
+
 
 CV_INNER = 5
 
@@ -87,9 +90,6 @@ def train_a_model(
             cwd="src_c"  # <-- Esto cambia el directorio de trabajo antes de ejecutar el comando
         )
 
-        
-
-        print(result.stdout)
         # Obtener los índices de las características seleccionadas
         selected_features_indices = list(map(int, result.stdout.strip().split(',')))
 
@@ -97,7 +97,8 @@ def train_a_model(
         selected_features = x_train.columns[selected_features_indices]
         x_train = x_train[selected_features]
         x_test = x_test[selected_features]
-    
+
+     
 
     if pu_learning:
         pul.feature_selection_jaccard(
