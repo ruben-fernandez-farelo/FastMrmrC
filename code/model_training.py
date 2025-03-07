@@ -77,6 +77,7 @@ def train_a_model(
     fast_mrmr_k: int = 0,
 ):
     print("Número de columnas en x_train antes de Fast-MRMR:", x_train.shape[1])
+    print("Numero de filas en x_train antes de Fast-MRMR:", x_train.shape[0])
     if fast_mrmr:
         # Ejecutar fast-mrmr y capturar salida
 

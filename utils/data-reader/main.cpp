@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
 	}
 	char* inputFilename = argv[1];
 	ifstream inputFile(inputFilename);
-	ofstream outputFile("PP_lab.mrmr", ios::out | ios::binary);
+	ofstream outputFile("GO.mrmr", ios::out | ios::binary);
 
 //Count lines and features.
 	if (inputFile.is_open()) {
