@@ -25,6 +25,7 @@ if __name__ == "__main__":
         "pu_t": args["pu_t"],
     }
 
+    
     if args["fast_mrmr"]:
         if args["fast_mrmr_k"] == "range":
             # Si se usa el rango, genera la lista de valores
@@ -33,6 +34,7 @@ if __name__ == "__main__":
         else:
             #print("fast_mrmr_k is not a range")
             search_space["fast_mrmr_k"] = [args["fast_mrmr_k"]]
+            
 
 
     for seed in SEEDS:

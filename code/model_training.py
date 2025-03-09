@@ -76,8 +76,8 @@ def train_a_model(
     fast_mrmr: bool = False,
     fast_mrmr_k: int = 0,
 ):
-    print("Número de columnas en x_train antes de Fast-MRMR:", x_train.shape[1])
-    print("Numero de filas en x_train antes de Fast-MRMR:", x_train.shape[0])
+    #print("Número de columnas en x_train antes de Fast-MRMR:", x_train.shape[1])
+    #print("Numero de filas en x_train antes de Fast-MRMR:", x_train.shape[0])
     if fast_mrmr:
         # Ejecutar fast-mrmr y capturar salida
 
@@ -94,7 +94,7 @@ def train_a_model(
         # Obtener los índices de las características seleccionadas
         selected_features_indices = list(map(int, result.stdout.strip().split(',')))
 
-        # Seleccionar las columnas correspondientes en x_train y x_test
+       
         selected_features = x_train.columns[selected_features_indices]
         x_train = x_train[selected_features]
         x_test = x_test[selected_features]

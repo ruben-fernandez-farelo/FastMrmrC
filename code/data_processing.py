@@ -33,9 +33,9 @@ def store_data_features(x: pd.DataFrame) -> None:
     x (pd.DataFrame): The features of the data.
     """
     global data_features
-    data_features = x
-
-    x = np.arange(len(x))
+    data_features = x.copy()  # Asegurar que se mantiene como DataFrame
+    
+    #x = np.arange(len(x)) # x = np.arange(len(x))  #TODO: Esto está sobreescribiendo `x` con un array de numpy., CAMBIO: Comentar esta línea
 
     return x
 
@@ -71,9 +71,5 @@ def generate_features(
         - x_train_temp (pd.DataFrame): Transformed training data features.
         - x_test_temp (pd.DataFrame): Transformed testing data features.
     """
-
-    x_train = get_data_features(x_train.index.tolist())
-    x_test = get_data_features(x_test.index.tolist())
-
-
+    
     return x_train, x_test

@@ -28,15 +28,19 @@ def run_experiment(
 
     x, y, gene_names = load_data(dataset)
 
+
     pul.compute_pairwise_jaccard_measures(x)  # Keep this line for future use
-    store_data_features(x)  # Almacenar características y obtener índices, no lo asigne a una x
+    x = store_data_features(x)
 
     outer_cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=random_state)
 
     experiment_preds, experiment_metrics = [], []
 
     for k, (train_idx, test_idx) in enumerate(outer_cv.split(x, y)):
-        x_train, x_test = x.iloc[train_idx], x.iloc[test_idx]  # Usar los índices
+        #x_train, x_test = x[train_idx], x[test_idx]  #TODO : x_train, x_test = x.iloc[train_idx], x.iloc[test_idx]  # Usar `.iloc[]` para mantener DataFrame 
+
+        x_train, x_test = x.iloc[train_idx], x.iloc[test_idx]         
+
         y_train, y_test = y[train_idx], y[test_idx]
         
    
