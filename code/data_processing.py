@@ -50,11 +50,12 @@ def get_data_features(indices) -> pd.DataFrame:
     Returns:
     pd.DataFrame: The examples with the specified indices.
     """
-    return data_features.iloc[indices]
+    return data_features.iloc[indices] # data_features.iloc[indices] en fast_mrmr no se usa esta funcion
 
 def generate_features(
     x_train: pd.DataFrame,
     x_test: pd.DataFrame,
+    selected_features: list[str],
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Generate features for training and testing data based on specified parameters.
@@ -71,5 +72,6 @@ def generate_features(
         - x_train_temp (pd.DataFrame): Transformed training data features.
         - x_test_temp (pd.DataFrame): Transformed testing data features.
     """
-    
+    x_train = x_train.loc[:, selected_features]
+    x_test = x_test.loc[:, selected_features]
     return x_train, x_test

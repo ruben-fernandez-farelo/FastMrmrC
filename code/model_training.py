@@ -41,6 +41,7 @@ def cv_train_with_params(
 
         x_learn, x_val = x_train.iloc[learn_idx], x_train.iloc[val_idx]
         y_learn, y_val = y_train.iloc[learn_idx], y_train.iloc[val_idx]
+        
 
         pred_val = train_a_model(
             x_learn,
@@ -93,11 +94,7 @@ def train_a_model(
 
         # Obtener los índices de las características seleccionadas
         selected_features_indices = list(map(int, result.stdout.strip().split(',')))
-
-       
         selected_features = x_train.columns[selected_features_indices]
-        x_train = x_train[selected_features]
-        x_test = x_test[selected_features]
 
      
 
@@ -119,7 +116,7 @@ def train_a_model(
             random_state=random_state,
         )
 
-    x_train, x_test = generate_features(x_train, x_test)
+    x_train, x_test = generate_features(x_train, x_test,selected_features)
 
     model = get_model(classifier, random_state=random_state)
 
